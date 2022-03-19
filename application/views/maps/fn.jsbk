@@ -1,0 +1,282 @@
+//Fn Toggle Traffic Layer Maps
+function toggleTraficLayer(){
+  if (trafficLayer.getMap() == null) {
+    trafficLayer.setMap(map);
+  } else {
+    trafficLayer.setMap(null);
+  }
+}
+//end//
+
+//Fn To LatLng Maps//
+function toLatLng(lat, lng){
+  return new google.maps.LatLng(lat, lng);
+}
+//end//
+
+//Fn To Marker Icon//
+function toIcon(icon){
+  return new google.maps.MarkerImage(icon, null, null, null, new google.maps.Size(31,40));
+}
+//end//
+
+
+//Fn Clear Marker//
+function clearMarkers(identifier) {
+  // if (!checkEmptyMarker(identifier)) {
+    for (var i = 0; i < markers[''+identifier+''].length; i++) {
+      markers[''+identifier+''][i].setMap(null);
+    }
+    markers[''+identifier+''] = [];
+  // }
+}
+//
+
+//Fn Clear Maps//
+function clearMaps(){
+  location.reload();
+}
+//end//
+
+//Fn ZoomInOut Maps//
+function zoomIn(){map.setZoom(map.getZoom() + 1);}
+function zoomOut(){map.setZoom(map.getZoom() - 1);}
+//end//
+
+//Fn Toggle SearchBar//
+function toggleSearchBar(type){
+  $("#search-bar").fadeToggle(1000);
+  // $("#search-query").focus();
+}
+//end//
+
+//Fn Toggle Sim//
+function toggleSim(type){
+  $("#sim").fadeToggle(1000);
+}
+//end//
+
+//Fn Toggle Stnk//
+function toggleStnk(type){
+  $("#stnk").fadeToggle(1000);
+}
+//end//
+
+//Fn Toggle MenuBar//
+function toggleMenuBar(){
+  $("#dropdown-menu").fadeToggle(1000);
+}
+//
+
+//Fn Grow and Shrink//
+function grow(x, w){
+  $(x).animate({ width: w}, 500);
+}
+
+function shrink(x, w){
+  $(x).animate({ width: w}, 500);
+}
+//end//
+
+//Fn checkArrayIdentifier
+function checkEmptyMarker(identifier){
+  var x = markers[''+identifier+''];
+  if (x === undefined || x.length == 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+//
+
+//Fn getLaporanMasyarakatId()
+function getLaporanMasyarakatId(identifier){
+  switch (identifier) {
+    case 'sct_balapan_liar':      return 10;    break;
+    case 'sct_calo':              return 14;    break;
+    case 'sct_informasi':         return 6;     break;
+    case 'sct_kemacetan':         return 12;     break;
+    case 'sct_kecelakaan':        return 11;     break;
+    case 'sct_lain_lain':         return 3;     break;
+    case 'sct_rambu_rambu':       return 13;     break;
+    case 'sct_pungli':            return 15;     break;
+    case 'sct_suap':              return 16;     break;
+    default: return 0;
+  }
+}
+//end//
+
+// Fn get icon for laporanMasyarakat//
+function getLaporanMasyarakatIcon(identifier){
+  var icon = getCategoryIconData(identifier).icon;
+  return '<?base_url()?>assets/icon/'+icon;
+}
+//end//
+
+//Fn ToggleMenuIdentifier//
+// Binding all menu goes here
+function toggleMenuIdentifier(identifier){
+  var listCctv = [
+    'sct_cctv_pemda_dki', 'sct_live_drone_cam',
+    'sct_live_patrol_cam', 'sct_cctv_korlantas'
+  ];
+  var listToggleDiv = ['sct_cek_sim', 'sct_cek_stnk'];
+  var listOther = ['sct_lalu_lintas'];
+  var listlaporanMasyarakat = [
+    'sct_balapan_liar', 'sct_calo', 'sct_informasi',
+    'sct_kemacetan', 'sct_kecelakaan', 'sct_lain_lain',
+    'sct_pungli', 'sct_rambu_rambu', 'sct_suap'
+  ];
+
+  //if video
+  // if($.inArray(identifier, listCctv)) {
+  if(listCctv.includes(identifier)){
+    if(checkEmptyMarker(identifier)){
+      showMarker('cctv', identifier, getCctvs(identifier));
+    } else {
+      clearMarkers(identifier);
+    }
+  }
+
+  //if ToggleDiv
+  // if($.inArray(identifier, listToggleDiv)){
+  else if(listToggleDiv.includes(identifier)){
+    switch (identifier) {
+      case 'sct_cek_sim': toggleSim(); break;
+      case 'sct_cek_stnk': toggleStnk(); break;
+      default:
+
+    }
+  }
+
+  //if Other
+  else if(listOther.includes(identifier)){
+    switch (identifier) {
+      case 'sct_lalu_lintas':
+        toggleTraficLayer();
+        break;
+      default:
+
+    }
+  }
+
+  //if LaporanMasyarakat
+  else if(listlaporanMasyarakat.includes(identifier)){
+    if(checkEmptyMarker(identifier)){
+      var laporan = getLaporanMasyarakatData(getLaporanMasyarakatId(identifier));
+      showMarker('laporanMasyarakat', identifier, laporan);
+    } else {
+      clearMarkers(identifier);
+    }
+  }
+}
+//end//
+
+
+//Fn Show Marker//
+function showMarker(type, identifier, data){
+  switch (type) {
+    case 'cctv':
+      for (var i = 0; i < data.length; i++) {
+        var id = data[i].id;
+        var urlType = data[i].url_type;
+        var lat = data[i].lat;
+        var lng = data[i].lng;
+        var name = data[i].cctv_name;
+        var url = data[i].url;
+        var icon = data[i].icon;
+        if(icon != ''){
+          icon = toIcon('<?=base_url()?>assets/icon/'+data[i].icon);
+        } else {icon = undefined;}
+
+        markers[''+identifier+''].splice(i, 0,
+          new google.maps.Marker({
+            map: map,
+            position: toLatLng(data[i].lat, data[i].lng),
+            title: data[i].cctv_name,
+            animation: google.maps.Animation.DROP,
+            icon: icon
+          })
+        );
+
+        markers[''+identifier+''][i].set("urltype", urlType);
+        markers[''+identifier+''][i].set("linkcctv", url);
+        markers[''+identifier+''][i].set("titlecctv", name);
+        markers[''+identifier+''][i].addListener('click', function() {
+          $('#triggerModal').click();
+          showCctv(this.urltype, this.linkcctv, this.titlecctv)
+        });
+      }
+      break;
+    case 'laporanMasyarakat':
+      var icon = toIcon(getLaporanMasyarakatIcon(identifier));
+      for (var i = 0; i < data.length; i++) {
+        var kategori = data[i].sub_kategori;
+        var pengaduan = data[i].pengaduan;
+        var infoWindow;
+        markers[''+identifier+''].splice(i, 0,
+          new google.maps.Marker({
+            map: map,
+            position: toLatLng(data[i].lat, data[i].lng),
+            //title: data[i].sub_kategori,
+            //animation: google.maps.Animation.DROP,
+            //icon: icon
+          })
+        );
+        markers[''+identifier+''][i].set("kategori", kategori);
+        markers[''+identifier+''][i].set("pengaduan", pengaduan);
+        markers[''+identifier+''][i].addListener('mouseover', function() {
+          infoWindow = new google.maps.InfoWindow({
+            content: '<b>'+this.kategori+'</b><br/><p>'+this.pengaduan+'</p>'
+          });
+          infoWindow.open(this.getMap(), this);
+        });
+        markers[''+identifier+''][i].addListener('mouseout', function() {
+          infoWindow.close();
+        });
+      }
+      break;
+    default:
+      console.log('no action');
+  }
+}
+//end//
+
+//Show CCTV on Modals//
+function showCctv(urlType, url, title){
+  if(urlType == 'html'){
+    html = '<p class="bg-info">Jika tidak tampil kemungkinan CCTV Offline.</p><iframe src="'+url+'" style="width:100%;min-height:50vh;border:0px"></iframe>';
+  }
+
+  if(urlType == 'youtube'){
+    html = '\
+      <p class="bg-info">Jika tidak tampil kemungkinan CCTV Offline.</p>\
+      <iframe width="100%" height="400px" src="'+url+'"></iframe>\
+    ';
+  }
+  $('#cctvOut').html(html);
+  $('.modal-title').html(title);
+}
+
+$('#myModal').on('hidden.bs.modal', function () {
+  $('#cctvOut').html("<p>empty.</p>");
+});
+//
+
+//Modal on hide//
+$('#myModal').on('hidden.bs.modal', function () {
+  $('#cctvOut').html("<p>empty.</p>");
+});
+//
+
+//SearchSIM//
+function searchSim(){
+  $('#form-sim').html('<p class="bg-info">Mohon maaf saat ini masih dalam perbaikan.</p>');
+}
+//
+
+//SearchSTNK//
+function searchStnk(){
+  $('#form-stnk').html('<p class="bg-info">Mohon maaf saat ini masih dalam perbaikan.</p>');
+}
+//

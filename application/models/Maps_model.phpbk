@@ -1,0 +1,84 @@
+<?php
+/**
+ * Class Maps Model
+ */
+class Maps_model extends CI_Model
+{
+
+  function __construct()
+  {
+    parent::__construct();
+  }
+
+  function getCctvs($categoryId){
+    $sql = "SELECT
+      map_cctv.id, map_cctv.cctv_name, map_cctv.lat,
+      map_cctv.lng, map_cctv.url, map_cctv.url_type,
+      map_category_sub.icon
+    FROM map_cctv
+    LEFT JOIN map_category_sub ON map_cctv.category_sub_id = map_category_sub.id
+    WHERE map_cctv.category_sub_id = '$categoryId'
+    LIMIT 100";
+    $q = $this->db->query($sql);
+    return $q->result_array();
+  }
+
+  function getSubCategoryId($identifier){
+    $sql = "SELECT id FROM map_category_sub WHERE identifier = '$identifier'";
+    $q = $this->db->query($sql);
+    return $q->first_row();
+  }
+
+  function getCategoryIcon($identifier){
+    $sql = "SELECT icon FROM map_category_sub WHERE identifier = '$identifier'";
+    $q = $this->db->query($sql);
+    return $q->first_row();
+  }
+
+  function getCases(){
+    $sql = "SELECT
+              work_order_mobile.idworkordermobile,
+              work_order_mobile.lat,
+              work_order_mobile.lng,
+              work_order_mobile.pengaduan,
+              subkategori.sub_kategori
+            FROM work_order_mobile
+            LEFT JOIN subkategori ON work_order_mobile.sub_kategori_id = subkategori.idsubkategori
+            ";
+    $q = $this->db->query($sql);
+    return $q->result_array();
+  }
+
+  function getCaseByCategory($categoryId){
+    $sql = "SELECT
+              work_order_mobile.idworkordermobile,
+              work_order_mobile.lat,
+              work_order_mobile.lng,
+              work_order_mobile.pengaduan,
+              subkategori.sub_kategori
+            FROM work_order_mobile
+            LEFT JOIN subkategori ON work_order_mobile.sub_kategori_id = subkategori.idsubkategori
+            WHERE subkategori.idsubkategori = $categoryId";
+    $q = $this->db->query($sql);
+    return $q->result_array();
+  }
+
+  function getMarkers(){
+    $sql = "SELECT identifier FROM map_category_sub WHERE marker = 1";
+    $q = $this->db->query($sql);
+    return $q->result_array();
+  }
+
+  function getCategory(){
+    $sql = "SELECT * FROM map_category";
+    $q = $this->db->query($sql);
+    return $q->result_array();
+  }
+
+  function getSubCategory($categoryId){
+    $sql = "SELECT name, identifier, icon FROM map_category_sub WHERE category_id = $categoryId";
+    $q = $this->db->query($sql);
+    return $q->result_array();
+  }
+}
+?>

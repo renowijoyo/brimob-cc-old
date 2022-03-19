@@ -1,0 +1,1 @@
+[31-Jan-2021 17:17:08 UTC] PHP Fatal error:  Call to a member function query() on a non-object in /home/ntmc/korbrimob.1500669.com/application/models/Maps_model.php on line 68

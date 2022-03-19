@@ -1,0 +1,513 @@
+//Fn Toggle Stnk//
+function toggleCCTVReport() {
+    $('#contentReportCCTV').html('');
+     response = '<a target="_blank" href ="http://118.91.132.133/report/cipinang.png" class="list-group-item list-group-item-action">Cipinang</a>\
+<a target="_blank" href ="http://118.91.132.133/report/kalibata.png" class="list-group-item list-group-item-action">Kalibata</a>\
+<a target="_blank" href ="http://118.91.132.133/report/dukuhatas.png" class="list-group-item list-group-item-action">Dukuh Atas</a>\
+<a target="_blank" href ="http://118.91.132.133/report/halim.png" class="list-group-item list-group-item-action">Halim</a>\
+<a target="_blank" href ="http://118.91.132.133/report/armabar.png" class="list-group-item list-group-item-action">Armabar</a>\
+<a target="_blank" href ="http://118.91.132.133/report/semanggibawah.png" class="list-group-item list-group-item-action">Semanggi Bawah</a>\
+<a target="_blank" href ="http://118.91.132.133/report/mabes.png" class="list-group-item list-group-item-action">Mabes</a>\
+<a target="_blank" href ="http://118.91.132.133/report/istiqlal.png" class="list-group-item list-group-item-action">Istiqlal</a>\
+<a target="_blank" href ="http://118.91.132.133/report/santa.png" class="list-group-item list-group-item-action">Santa</a>';
+$('#contentReportCCTV').append(response);
+    // $.ajax({
+    //     type: "GET",
+    //     url: "http://smart.1500669.com/maps/checkwarning",
+    //     dataType: "json",
+    //     success: function(res) {
+    //         var obj = JSON.parse(JSON.stringify(res));
+    //         for (var i = 0; i < obj.length; i++) {
+    //             str = obj[i].channel_name.replace(/\s/g, '');
+    //             lower = str.toLowerCase();
+    //             response = '  <a target="_blank" href ="http://118.91.132.133/report/'+lower+'.png" class="list-group-item list-group-item-action">'+obj[i].channel_name+'</a>';
+    //             $('#contentReportCCTV').append(response);
+    //         }            
+    //     },
+    //     error: function(errorThrown) {
+    //         console.log(errorThrown);
+    //     }
+    // });
+    $("#listReportCCTV").fadeToggle(1000);
+}
+//end//
+//Fn Toggle Traffic Layer Maps
+function toggleTraficLayer() {
+    if (trafficLayer.getMap() == null) {
+        trafficLayer.setMap(map);
+    } else {
+        trafficLayer.setMap(null);
+    }
+}
+//end//
+//Fn To LatLng Maps//
+function toLatLng(lat, lng) {
+    return new google.maps.LatLng(lat, lng);
+}
+//end//
+//Fn To Marker Icon//
+function toIcon(icon) {
+    return new google.maps.MarkerImage(icon, null, null, null, new google.maps.Size(31, 40));
+}
+//end//
+//Fn Clear Marker//
+function clearMarkers(identifier) {
+    // if (!checkEmptyMarker(identifier)) {
+    for (var i = 0; i < markers['' + identifier + ''].length; i++) {
+        markers['' + identifier + ''][i].setMap(null);
+    }
+    markers['' + identifier + ''] = [];
+    // }
+}
+//
+//Fn Clear Maps//
+function clearMaps() {
+    location.reload();
+}
+//end//
+//Fn ZoomInOut Maps//
+function zoomIn() {
+    map.setZoom(map.getZoom() + 1);
+}
+
+function zoomOut() {
+    map.setZoom(map.getZoom() - 1);
+}
+//end//
+//Fn Toggle SearchBar//
+function toggleSearchBar(type) {
+    $("#search-bar").fadeToggle(1000);
+    // $("#search-query").focus();
+}
+//end//
+//Fn Toggle Sim//
+function toggleSim(type) {
+    $("#sim").fadeToggle(1000);
+}
+//end//
+//Fn Toggle Stnk//
+function toggleStnk(type) {
+    $("#stnk").fadeToggle(1000);
+}
+//end//
+//Fn Toggle MenuBar//
+function toggleMenuBar() {
+    $("#dropdown-menu").fadeToggle(1000);
+}
+//
+//Fn Grow and Shrink//
+function grow(x, w) {
+    $(x).animate({
+        width: w
+    }, 500);
+}
+
+function shrink(x, w) {
+    $(x).animate({
+        width: w
+    }, 500);
+}
+//end//
+//Fn checkArrayIdentifier
+function checkEmptyMarker(identifier) {
+    var x = markers['' + identifier + ''];
+    if (x === undefined || x.length == 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+//
+//Fn getLaporanMasyarakatId()
+function getLaporanMasyarakatId(identifier) {
+    switch (identifier) {
+        case 'sct_balapan_liar':
+            return 10;
+            break;
+        case 'sct_calo':
+            return 14;
+            break;
+        case 'sct_informasi':
+            return 6;
+            break;
+        case 'sct_kemacetan':
+            return 12;
+            break;
+        case 'sct_kecelakaan':
+            return 11;
+            break;
+        case 'sct_lain_lain':
+            return 3;
+            break;
+        case 'sct_rambu_rambu':
+            return 13;
+            break;
+        case 'sct_pungli':
+            return 15;
+            break;
+        case 'sct_suap':
+            return 16;
+            break;
+        default:
+            return 0;
+    }
+}
+//end//
+// Fn get icon for laporanMasyarakat//
+function getLaporanMasyarakatIcon(identifier) {
+    var icon = getCategoryIconData(identifier).icon;
+    return '<?base_url()?>assets/icon/' + icon;
+}
+//end//
+//Fn ToggleMenuIdentifier//
+// Binding all menu goes here
+function toggleMenuIdentifier(identifier) {
+    var listCctv = ['sct_cctv_pemda_dki', 'sct_live_drone_cam', 'sct_live_patrol_cam', 'sct_cctv_korlantas'];
+    var listToggleDiv = ['sct_cek_sim', 'sct_cek_stnk'];
+    var listOther = ['sct_lalu_lintas', 'sct_live_traffic','sct_cctv_report'];
+    var listlaporanMasyarakat = ['sct_balapan_liar', 'sct_calo', 'sct_informasi', 'sct_kemacetan', 'sct_kecelakaan', 'sct_lain_lain', 'sct_pungli', 'sct_rambu_rambu', 'sct_suap'];
+    var AnggotaPolri = ['sct_anggota_polri'];
+    var MobilPjr = ['sct_mobil_pjr'];
+    var MotorPjr = ['sct_motor_pjr'];
+    //if video
+    // if($.inArray(identifier, listCctv)) {
+    if (listCctv.includes(identifier)) {
+        if (checkEmptyMarker(identifier)) {
+            showMarker('cctv', identifier, getCctvs(identifier));
+        } else {
+            clearMarkers(identifier);
+        }
+    }
+    //if ToggleDiv
+    // if($.inArray(identifier, listToggleDiv)){
+    else if (listToggleDiv.includes(identifier)) {
+        switch (identifier) {
+            case 'sct_cek_sim':
+                toggleSim();
+                break;
+            case 'sct_cek_stnk':
+                toggleStnk();
+                break;
+            default:
+        }
+    }
+    //if Other
+    else if (listOther.includes(identifier)) {
+        switch (identifier) {
+            case 'sct_lalu_lintas':
+                toggleTraficLayer();
+                break;
+            case 'sct_live_traffic':
+                if (checkEmptyMarker('sct_live_traffic')) {
+                    showMarker('live_traffic', 'sct_live_traffic', getWarning());
+                } else {
+                    clearMarkers('sct_live_traffic');
+                }
+                break;
+            case 'sct_cctv_report':
+                toggleCCTVReport();
+                break;
+            default:
+        }
+    }
+    //if LaporanMasyarakat
+    else if (listlaporanMasyarakat.includes(identifier)) {
+        if (checkEmptyMarker(identifier)) {
+            var laporan = getLaporanMasyarakatData(getLaporanMasyarakatId(identifier));
+            showMarker('laporanMasyarakat', identifier, laporan);
+        } else {
+            clearMarkers(identifier);
+        }
+    }
+    // if List Korlantas
+    else if (AnggotaPolri.includes(identifier)) {
+        if (checkEmptyMarker(identifier)) {
+            var laporan = getAnggota();
+            showMarker('anggota', identifier, laporan);
+        } else {
+            clearMarkers(identifier);
+        }
+    }
+    else if (MobilPjr.includes(identifier)) {
+        if (checkEmptyMarker(identifier)) {
+            var laporan = getMobilPjr();
+            showMarker('MobilPjr', identifier, laporan);
+        } else {
+            clearMarkers(identifier);
+        }
+    }
+    else if (MotorPjr.includes(identifier)) {
+        if (checkEmptyMarker(identifier)) {
+            var laporan = getMotorPjr();
+            showMarker('MotorPjr', identifier, laporan);
+        } else {
+            clearMarkers(identifier);
+        }
+    }
+}
+//end//
+//Fn Show Marker//
+function showMarker(type, identifier, data) {
+    switch (type) {
+        case 'cctv':
+            for (var i = 0; i < data.length; i++) {
+                var id = data[i].id;
+                var urlType = data[i].url_type;
+                var lat = data[i].lat;
+                var lng = data[i].lng;
+                var name = data[i].cctv_name;
+                var url = data[i].url;
+                var icon = data[i].icon;
+                if (icon != '') {
+                    icon = toIcon('<?=base_url()?>assets/icon/' + data[i].icon);
+                } else {
+                    icon = undefined;
+                }
+                markers['' + identifier + ''].splice(i, 0, new google.maps.Marker({
+                    map: map,
+                    position: toLatLng(data[i].lat, data[i].lng),
+                    title: data[i].cctv_name,
+                    animation: google.maps.Animation.DROP,
+                    icon: icon
+                }));
+                markers['' + identifier + ''][i].set("urltype", urlType);
+                markers['' + identifier + ''][i].set("linkcctv", url);
+                markers['' + identifier + ''][i].set("titlecctv", name);
+                markers['' + identifier + ''][i].addListener('click', function() {
+                    $('#triggerModal').click();
+                    showCctv(this.urltype, this.linkcctv, this.titlecctv)
+                });
+            }
+            break;
+        case 'laporanMasyarakat':
+            var icon = toIcon(getLaporanMasyarakatIcon(identifier));
+            for (var i = 0; i < data.length; i++) {
+                var kategori = data[i].sub_kategori;
+                var pengaduan = data[i].pengaduan;
+                var infoWindow;
+                markers['' + identifier + ''].splice(i, 0, new google.maps.Marker({
+                    map: map,
+                    position: toLatLng(data[i].lat, data[i].lng),
+                    //title: data[i].sub_kategori,
+                    //animation: google.maps.Animation.DROP,
+                    //icon: icon
+                }));
+                markers['' + identifier + ''][i].set("kategori", kategori);
+                markers['' + identifier + ''][i].set("pengaduan", pengaduan);
+                markers['' + identifier + ''][i].addListener('mouseover', function() {
+                    infoWindow = new google.maps.InfoWindow({
+                        content: '<b>' + this.kategori + '</b><br/><p>' + this.pengaduan + '</p>'
+                    });
+                    infoWindow.open(this.getMap(), this);
+                });
+                markers['' + identifier + ''][i].addListener('mouseout', function() {
+                    infoWindow.close();
+                });
+            }
+            break;
+        case 'MobilPjr':
+            for (var i = 0; i < data.length; i++) {
+              var id = data[i].id;
+                var mobil_name = data[i].mobil_name;
+                var lat = data[i].lat;
+                var lng = data[i].lng;
+                var icon = data[i].icon;
+                if (icon != '') {
+                    icon = toIcon('<?=base_url()?>assets/icon/' + data[i].icon);
+                } else {
+                    icon = undefined;
+                }
+                markers['' + identifier + ''].splice(i, 0, new google.maps.Marker({
+                    map: map,
+                    position: toLatLng(data[i].lat, data[i].lng),
+                    title: data[i].mobil_name,
+                    animation: google.maps.Animation.DROP,
+                    icon: icon
+                }));
+            }
+            break;
+        case 'MotorPjr':
+            for (var i = 0; i < data.length; i++) {
+              var id = data[i].id;
+                var motor_name = data[i].motor_name;
+                var lat = data[i].lat;
+                var lng = data[i].lng;
+                var icon = data[i].icon;
+                if (icon != '') {
+                    icon = toIcon('<?=base_url()?>assets/icon/' + data[i].icon);
+                } else {
+                    icon = undefined;
+                }
+                markers['' + identifier + ''].splice(i, 0, new google.maps.Marker({
+                    map: map,
+                    position: toLatLng(data[i].lat, data[i].lng),
+                    title: data[i].motor_name,
+                    animation: google.maps.Animation.DROP,
+                    icon: icon
+                }));
+            }
+            break;
+        case 'anggota':
+            for (var i = 0; i < data.length; i++) {
+              var id = data[i].id;
+                var anggota_name = data[i].anggota_name;
+                var lat = data[i].lat;
+                var lng = data[i].lng;
+                var icon = data[i].icon;
+                if (icon != '') {
+                    icon = toIcon('<?=base_url()?>assets/icon/' + data[i].icon);
+                } else {
+                    icon = undefined;
+                }
+                markers['' + identifier + ''].splice(i, 0, new google.maps.Marker({
+                    map: map,
+                    position: toLatLng(data[i].lat, data[i].lng),
+                    title: data[i].anggota_name,
+                    animation: google.maps.Animation.DROP,
+                    icon: icon
+                }));
+            }
+            break;
+        case 'live_traffic':
+            $.ajax({
+                type: "GET",
+                url: "<?php echo base_url(); ?>maps/checkwarning",
+                dataType: "json",
+                success: function(res) {
+                    function getWarningMarker(){
+                        clearMarkers('sct_live_traffic');
+                    var data = res;
+                    for (var i = 0; i < data.length; i++) {
+                        var id = data[i].id;
+                        var channel_name = data[i].channel_name;
+                        var latitude = data[i].latitude;
+                        var longitude = data[i].longitude;
+                        var origin = data[i].origin;
+                        var snapshot_path = data[i].snapshot_path;
+                        var type = data[i].type;
+                        var map_status = data[i].map_status;
+                        var video_url = data[i].video_url;
+                        var channel_id = data[i].channel_id;
+                        var icon = toIcon('<?=base_url()?>assets/icon/' + data[i].map_icon);
+                        markers['' + identifier + ''].splice(i, 0, new google.maps.Marker({
+                            map: map,
+                            position: toLatLng(data[i].latitude, data[i].longitude),
+                            title: data[i].channel_name,
+                            animation: google.maps.Animation.DROP,
+                            icon: icon
+                        }));
+                        markers['' + identifier + ''][i].setAnimation(null);
+                        markers['' + identifier + ''][i].set("channel_name", channel_name);
+                        markers['' + identifier + ''][i].set("photo_url", snapshot_path);
+                        markers['' + identifier + ''][i].set("video_url", video_url);
+                        markers['' + identifier + ''][i].set("map_status", map_status);
+                        markers['' + identifier + ''][i].set("channel_id", channel_id);
+                        markers['' + identifier + ''][i].addListener('click', function() {
+                            if (this.map_status == 'calm') {
+                                infoWindow = new google.maps.InfoWindow({
+                                    content: '<button onclick="liveStreamShow(\'' + this.channel_name + '\')" type="button" style="background-color:#3CDC3C;border:0px" class="btn btn-sm btn-block">' + this.channel_name + '</button><table width="300px"><tr><td>Last 6 Event<iframe width="100%" scrolling="no" style="border:0;overflow:hidden;" src="http://118.91.132.133/Recording/Camlytics%20Media/dir.php?' + this.channel_id + '/6"></iframe></td></tr><tr><td><button onclick="liveStreamShow(\'' + this.channel_name + '\')" type="button" style="background-color:#3CDC3C;border:0px" class="btn btn-sm btn-block">Live Streaming</button><iframe style="border: 0" scrolling="no" width="100%" height="250" src="' + this.video_url + '"></iframe></td></tr></table>'
+                                });
+                                infoWindow.open(this.getMap(), this);
+                                // showPopUp(this.channel_name,this.channel_id,this.video_url);
+                            } else if (this.map_status == 'warn') {
+                                infoWindow = new google.maps.InfoWindow({
+                                    content: '<button onclick="liveStreamShow(\'' + this.channel_name + '\')" type="button" style="background-color:#F62950;border:0px" class="btn btn-sm btn-block">' + this.channel_name + '</button><table width="300px"><tr><td>Last 6 Event<iframe width="100%" scrolling="no" style="border:0;overflow:hidden;" src="http://118.91.132.133/Recording/Camlytics%20Media/dir.php?' + this.channel_id + '/6"></iframe></td></tr><tr><td><button onclick="liveStreamShow(\'' + this.channel_name + '\')" type="button" style="background-color:#F62950;border:0px" class="btn btn-sm btn-block">Live Streaming</button><iframe style="border: 0" scrolling="no" width="100%" height="250" src="' + this.video_url + '"></iframe></td></tr></table>'
+                                });
+                                infoWindow.open(this.getMap(), this);
+                                // showPopUp(this.channel_name,this.channel_id,this.video_url);
+                            } else if (this.map_status == 'problem') {
+                                infoWindow = new google.maps.InfoWindow({
+                                    content: '<button type="button" data-toggle="modal" data-target="#modalLS" style="background-color:#808080;border:0px" class="btn btn-block">' + this.channel_name + ' Disconnect </button> <table width="300px"><tr><td>Last 6 Event<iframe width="100%" scrolling="no" style="border:0;overflow:hidden;"  src="http://118.91.132.133/Recording/Camlytics%20Media/dir.php?' + this.channel_id + '/6"></iframe></td></tr><tr><td>Live Streaming<iframe style="border: 0" scrolling="no" width="100%" height="250" src="' + this.video_url + '"></iframe></td></tr></table>'
+                                });
+                                infoWindow.open(this.getMap(), this);
+                                showPopUp(this.channel_name, this.channel_id, this.video_url);
+                            }
+                        });
+                    }
+                    }
+                    getWarningMarker();
+                    setInterval(function(){
+                        getWarningMarker();
+                    },180000);
+                },
+                error: function(errorThrown) {
+                    console.log(errorThrown);
+                }
+
+            });
+            break;
+        default:
+            console.log('no action');
+    }
+}
+//end//
+//Show CCTV on Modals//
+function showCctv(urlType, url, title) {
+    if (urlType == 'html') {
+        html = '<p class="bg-info">Jika tidak tampil kemungkinan CCTV Offline.</p><iframe src="' + url + '" style="width:100%;min-height:50vh;border:0px"></iframe>';
+    }
+    if (urlType == 'youtube') {
+        html = '\
+      <p class="bg-info">Jika tidak tampil kemungkinan CCTV Offline.</p>\
+      <iframe width="100%" height="400px" src="' + url + '"></iframe>\
+    ';
+    }
+    $('#cctvOut').html(html);
+    $('.modal-title').html(title);
+}
+$('#myModal').on('hidden.bs.modal', function() {
+    $('#cctvOut').html("<p>empty.</p>");
+});
+//
+//Modal on hide//
+$('#myModal').on('hidden.bs.modal', function() {
+    $('#cctvOut').html("<p>empty.</p>");
+});
+//
+function liveStreamShow(channel_name){
+    str = channel_name.replace(/\s/g, '');
+    lower = str.toLowerCase();
+    window.open("<?php echo base_url(); ?>cctv/live/"+lower, str,'resizable,height=560,width=470');
+    // window.open("http://118.91.132.131/stream/"+lower+"/livestream2.html?"+channel_name, str,'resizable,height=560,width=470');
+}
+//SearchSIM//
+function searchSim() {
+            $('#load').html('<img src="http://lindungihakpilihmu.kpu.go.id/assets/img/ajax-loader.gif"/>');
+            var nik = $('#nik').val();
+                $.ajax({
+                    type: "POST",
+                    url: "http://202.46.1.219/api/index.php/dpt/dpthp",
+                    data: {
+                        nik: nik,
+                    },
+                    dataType: "json",
+                    success: function(res) {
+                        var obj = JSON.parse(JSON.stringify(res));
+                        if (obj.message == 'success') {
+                            var pemilih = JSON.parse(JSON.stringify(obj.data));
+                            $('#load').html('');
+                            $('#gagal').html('');
+                            $('#namaktp').html(pemilih.nama);
+                            $('#namaKabKota').html(pemilih.namaKabKota);
+                            $('#namaKecamatan').html(pemilih.namaKecamatan);
+                            $('#namaKelurahan').html(pemilih.namaKelurahan);
+                            $('#namaPropinsi').html(pemilih.namaPropinsi);
+                            $('#nikdata').html(pemilih.nik);
+                        }
+                    },
+                    error: function(errorThrown) {
+                        $("#gagal").html("<div class='alert alert-danger alert-dismissible'>\
+                                        <h4><i class='icon fa fa-ban'></i> Alert!</h4>\
+                                        ANDA BELUM TERDAFTAR ATAU KOMBINASI DAN NIK SALAH.\
+                                      </div>");
+                        $('#load').html('');
+                        console.log(errorThrown);
+                    }
+                });
+}
+//
+//SearchSTNK//
+function searchStnk() {
+    $('#form-stnk').html('<p class="bg-info">Mohon maaf saat ini masih dalam perbaikan.</p>');
+}
+//

@@ -1,0 +1,155 @@
+<style>
+html, body {
+  height: 100%; margin: 0; padding: 0; overflow-x: hidden;
+}
+
+/*Global*/
+.ntmc-bg{background-color: rgba(30, 3, 78, 0.8);}
+.ntmc-bg5{background-color: rgba(30, 3, 78, 0.2);}
+.rad5{border-radius: 5px;}
+.list-group-item{ padding:2.5px 10px; border: 0px;}
+.list-item-head{padding:10px;}
+.list-group-item div.checkbox{margin: 5px 0px;}
+.list-group-item div.radio{margin: 5px 0px;}
+.white{color:#fff;}
+#triggerModal { display: none; }
+/*end*/
+
+/*Map*/
+#map {
+  height: 100%; width: 100%;
+  z-index: 1;
+}
+/*end*/
+
+/*Header*/
+#header {
+  position: absolute;
+  left: 20px; top: 5px;
+  width: 40%;
+  z-index: 2;
+}
+
+#header #title h3{
+  margin: 5px 10px;
+  padding: 15px 10px;
+  color: #fff;
+}
+/*end*/
+
+/*Zoom Panel*/
+#zoom-control {
+  position: absolute;
+  left: 20px; bottom: 40px;
+  z-index: 2;
+}
+
+button.zoom {
+  border: none;
+  padding: 8px;
+  color:#fff;
+  font-size: 20px;
+}
+/*end*/
+
+/*Navigation*/
+#navigation {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 2;
+}
+
+.btn-nav {
+  padding: 8px;
+}
+
+.btn-nav i {
+  font-size: 30px;
+}
+
+#search-bar {
+  position: relative;
+  width: auto;
+  right: 0px;
+  margin-top: 10px;
+  display: none;
+}
+
+#search-bar input {
+  font-size: 20px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+
+#dropdown-menu {
+  display: none;
+  position: relative;
+  overflow-y: scroll;
+  width: 300px;
+  max-height: 400px;
+  right: 0px;
+  margin-top: 10px;
+  font-size: 16px;
+  color: #fff;
+}
+
+/*#search-bar input:focus {
+  width: 500px;
+}*/
+
+.right-top {
+  float: right;
+}
+
+/*end*/
+
+/*Logout*/
+#logout{
+  position: absolute;
+  right: 20px; bottom: 50px;
+  z-index: 2;
+}
+
+a.logout {
+  border: none;
+  padding: 10px;
+  color:#fff;
+  font-size: 20px;
+}
+/**/
+
+/*Search SIM*/
+#cek-bar{
+  position: absolute;
+  left: 20px; top: 80px;
+  z-index: 2;
+  /*display: none;*/
+}
+
+#cek-bar div {padding: 5px; margin-bottom: 5px;}
+/**/
+
+/*Responsive*/
+@media only screen and (max-width: 786px) {
+  #header {width: 90%}
+  #search-bar{display: none;}
+  #btn-search{display: none;}
+  #dropdown-menu{margin-top: 50px; right: 10px;}
+  #dropdown-menu{display: none; max-height: 300px;}
+  #header #title h3{
+    margin: 5px 10px;
+    padding: 5px 5px;
+    color: #fff;
+    font-size: 20px;
+  }
+  #cek-bar{top:100px;}
+}
+
+@media only screen and (max-width: 1024px) {
+  #header {width: 50%}
+}
+@media only screen and (max-width: 1200px) {
+}
+/*end*/
+</style>
